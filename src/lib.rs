@@ -1,16 +1,9 @@
-// this is an implementation of `https://stackoverflow.com/a/66405791`
+use thiserror::Error;
 
-#[derive(Debug)]
+#[derive(Error, Debug)]
 pub enum ErrorKind {
-    IndexError,
-}
-
-impl std::fmt::Display for ErrorKind {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::IndexError => write!(f, "square is currently occupied"),
-        }
-    }
+    #[error("{0:?} is currently occupied")]
+    IndexError(Square),
 }
 
 #[derive(Debug, PartialEq)]
@@ -35,7 +28,7 @@ impl Mark {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Debug, Clone, Copy)]
 pub enum Square {
     A1 = 0x80080080,
     A2 = 0x40008000,
@@ -106,7 +99,7 @@ impl Board {
         if (*square as u32 & (self.xboard | self.oboard)) == 0 {
             Ok(())
         } else {
-            Err(ErrorKind::IndexError)
+            Err(ErrorKind::IndexError(*square))
         }
     }
 
