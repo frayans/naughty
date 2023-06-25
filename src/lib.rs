@@ -196,7 +196,7 @@ mod tests {
     fn test_game_make_move_err() {
         let game = Game::default();
         let game = game.make_move(Square::B2).unwrap();
-        let game = game.make_move(Square::B2).unwrap();
-        // assert!(game.is_err());
+        let game = game.make_move(Square::B2);
+        assert!(game.is_err());
     }
 }
