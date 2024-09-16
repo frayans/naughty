@@ -1,9 +1,11 @@
+use std::fmt;
+
 use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum ErrorKind {
     #[error("{0:?} is currently occupied")]
-    IndexError(Square),
+    SquareOccupied(Square),
 }
 
 #[derive(Debug, PartialEq)]
@@ -19,12 +21,18 @@ impl Mark {
             Mark::Naught => Mark::Cross,
         }
     }
+}
 
-    pub fn to_str(&self) -> &str {
-        match self {
-            Mark::Cross => "X",
-            Mark::Naught => "O",
-        }
+impl fmt::Display for Mark {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Self::Cross => "X",
+                Self::Naught => "O",
+            }
+        )
     }
 }
 
@@ -99,7 +107,7 @@ impl Board {
         if (*square as u32 & (self.xboard | self.oboard)) == 0 {
             Ok(())
         } else {
-            Err(ErrorKind::IndexError(*square))
+            Err(ErrorKind::SquareOccupied(*square))
         }
     }
 
